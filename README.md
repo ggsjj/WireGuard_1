@@ -45,7 +45,7 @@ sudo apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-gen
 
  # 3.1：安装新内核 linux-headers内核
 
- # sudo apt-get install linux-headers-4.4.0-47-generic linux-headers-extra-4.4.0-47-generic
+ # sudo apt-get install linux-headers-4.4.0-47 linux-headers-4.4.0-47-generic
 
 4：卸载不要的内核
 
@@ -53,7 +53,7 @@ sudo apt-get purge linux-image-4.4.0-31-generic linux-image-extra-4.4.0-31-gener
 
  # 4.1：卸载不要的内核 linux-headers内核
 
- # sudo apt-get purge linux-headers-4.4.0-31-generic linux-headers-extra-4.4.0-31-generic
+ # sudo apt-get purge linux-headers-4.4.0-31 linux-headers-4.4.0-31-generic
 
 5：更新 grub引导
 
