@@ -338,7 +338,134 @@ systemctl disable wg-quick@wg0
 ```
 
 
+# WireGuard —— 多用户配置教程
+
+服务端配置文件添加用户
+
+以下步骤是动态添加客户端配置（以下配置前提是你已经配置过 WireGuard 配置文件并启动了）。
+
+你也可以手动修改配置文件 [/etc/wireguard/wg0.conf]，记得修改完重启一下。以下动态添加无需重启。
 
 ```bash
+# 重新生成一对客户端密匙
+# cprivatekey1 为客户端私匙，cpublickey1 为客户端公匙
+ 
+wg genkey | tee cprivatekey1 | wg pubkey > cpublickey1
+# 服务器上执行添加客户端配置代码(新增一个 [peer])：
+# $(cat cpublickey1) 这个是客户端公匙，10.0.0.3/32 这个是客户端内网IP地址，按序递增最后一位(.3)，不要重复
+ 
+wg set wg0 peer $(cat cpublickey1) allowed-ips 10.0.0.3/32
+```
+然后查看 WireGuard 状态：
 
+```bash
+wg
+ 
+# 执行命令后输出内容如下（仅供参考，下面的不是让你执行的命令）：
+interface: wg0
+  public key: xxxxxxxxxxxxxxxxx #服务端私匙
+  private key: (hidden)
+  listening port: 443
+ 
+peer: xxxxxxxxxxxxxxxxxxxx #旧客户端账号的公匙
+  allowed ips: 10.0.0.2/32 #旧客户端账号的内网IP地址
+ 
+peer: xxxxxxxxxxxxxxxxxxxx #新客户端账号的公匙
+  allowed ips: 10.0.0.3/32 #新客户端账号的内网IP地址
+# 以上内容仅为输出示例（仅供参考）
+```
+如果显示正常，那么我们就保存到配置文件：
+
+```bash
+wg-quick save wg0
+
+然后我们就要开始生成对应的客户端配置文件了。
+```
+生成对应客户端配置文件
+
+新客户端配置文件，和其他客户端账号的配置文件只有 [Interface] 中的客户端私匙、内网IP地址参数不一样。
+
+```bash
+# 井号开头的是注释说明，用该命令执行后会自动过滤注释文字。
+# 下面加粗的这一大段都是一个代码！请把下面几行全部复制，然后粘贴到 SSH软件中执行，不要一行一行执行！
+ 
+echo "[Interface]
+# 客户端的私匙，对应服务器配置中的客户端公匙（自动读取上面刚刚生成的密匙内容）
+PrivateKey = $(cat cprivatekey1)
+# 客户端的内网IP地址（如果上面你添加的内网IP不是 .3 请自行修改）
+Address = 10.0.0.3/24
+# 解析域名用的DNS
+DNS = 8.8.8.8
+# 保持默认
+MTU = 1420
+[Peer]
+# 服务器的公匙，对应服务器的私匙（自动读取上面刚刚生成的密匙内容）
+PublicKey = $(cat spublickey)
+# 服务器地址和端口，下面的 X.X.X.X 记得更换为你的服务器公网IP，端口请填写服务端配置时的监听端口
+Endpoint = X.X.X.X:6700
+# 因为是客户端，所以这个设置为全部IP段即可
+AllowedIPs = 0.0.0.0/0, ::0/0
+# 保持连接，如果客户端或服务端是 NAT 网络(比如国内大多数家庭宽带没有公网IP，都是NAT)，那么就需要添加这个参数定时链接服务端(单位：秒)，如果你的服务器和你本地都不是 NAT 网络，那么建议不使用该参数（设置为0，或客户端配置文件中删除这行）
+PersistentKeepalive = 25"|sed '/^#/d;/^\s*$/d' > client1.conf
+ 
+# 上面加粗的这一大段都是一个代码！请把下面几行全部复制，然后粘贴到 SSH软件中执行，不要一行一行执行！
+```
+接下来你就可以将这个客户端配置文件 [/etc/wireguard/client.conf] 通过SFTP、HTTP等方式下载到本地了。
+
+不过我更推荐，SSH中打开显示配置文件内容并复制出来后，本地设备新建一个文本文件 [xxx.conf] (名称随意，后缀名需要是 .conf) 并写入其中，提供给 WireGuard 客户端读取使用。
+```bash
+
+cat /etc/wireguard/client.conf
+```
+
+保存WireGuard
+
+```bash
+wg-quick save wg0
+```
+
+重启WireGuard
+
+```bash
+wg-quick down wg0
+
+wg-quick up wg0
+```
+
+
+
+
+```
+服务端配置文件删除用户
+
+```bash
+wg set wg0 peer $(cat cpublickey1) remove
+# 如果客户端公匙文件还在，那么可以执行这个命令删除。
+# 注意：该命令执行后，就可以跳过下面这段命令了，直接保存配置文件即可。
+ 
+——————————————
+ 
+# 如果客户端公匙文件已删除，那么可以通过 wg 命令看到客户端的公匙：
+wg
+ 
+# 执行命令后输出内容如下（仅供参考，下面的不是让你执行的命令）：
+interface: wg0
+  public key: xxxxxxxxxxxxxxxxx #服务端私匙
+  private key: (hidden)
+  listening port: 443
+ 
+peer: xxxxxxxxxxxxxxxxxxxx #客户端账号的公匙
+  allowed ips: 10.0.0.2/32 #客户端账号的内网IP地址
+ 
+peer: xxxxxxxxxxxxxxxxxxxx #客户端账号的公匙
+  allowed ips: 10.0.0.3/32 #客户端账号的内网IP地址
+# 以上内容仅为输出示例（仅供参考）
+ 
+# 复制你要删除的客户端账号的公匙(peer 后面的字符)，替换下面命令中的 xxxxxxx 并执行即可
+wg set wg0 peer xxxxxxx remove
+# 执行后，我们在用 wg 命令查看一下是否删除成功。
+如果删除成功，那么我们就保存到配置文件：
+
+wg-quick save wg0
+完啦~
 ```
