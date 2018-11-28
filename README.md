@@ -275,7 +275,7 @@ MTU = 1420
 # 服务器的公匙，对应服务器的私匙（自动读取上面刚刚生成的密匙内容）
 PublicKey = $(cat spublickey)
 # 服务器地址和端口，下面的 X.X.X.X 记得更换为你的服务器公网IP，端口请填写服务端配置时的监听端口
-Endpoint = X.X.X.X:443
+Endpoint = X.X.X.X:6700
 # 因为是客户端，所以这个设置为全部IP段即可
 AllowedIPs = 0.0.0.0/0, ::0/0
 # 保持连接，如果客户端或服务端是 NAT 网络(比如国内大多数家庭宽带没有公网IP，都是NAT)，那么就需要添加这个参数定时链接服务端(单位：秒)，如果你的服务器和你本地都不是 NAT 网络，那么建议不使用该参数（设置为0，或客户端配置文件中删除这行）
@@ -368,7 +368,7 @@ wg
 interface: wg0
   public key: xxxxxxxxxxxxxxxxx #服务端私匙
   private key: (hidden)
-  listening port: 443
+  listening port: 6700
  
 peer: xxxxxxxxxxxxxxxxxxxx #旧客户端账号的公匙
   allowed ips: 10.0.0.2/32 #旧客户端账号的内网IP地址
