@@ -31,12 +31,17 @@ rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
 }
 
 #debian8安装wireguard
+wireguard_debian8_install(){
 if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
 echo "请选择 Ubuntu安装wireguard,请稍等..."
 sleep 3s
 start_menu
 fi
-wireguard_debian8_install(){
+if  [ -n "$(grep '[Interface]' /etc/wireguard/wg0.conf)" ] ;then
+echo "你已安装wireguard,请稍等..."
+sleep 3s
+start_menu
+fi
 echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
 echo -e 'Package: *\nPin: release a=unstable\nPin-Priority: 150' > /etc/apt/preferences.d/limit-unstable
 apt update
@@ -120,13 +125,13 @@ sleep 3s
 start_menu
 fi
 del=$(uname -r)
-sudo apt-get purge $del -y
-sudo apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-generic
+apt-get purge $del -y
+apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-generic
 sudo update-grub
 # 更换网卡eth0
 sed  -i 's/consoleblank=0/net.ifnames=0 biosdevname=0/g'  /etc/default/grub
 sed  -i 's/ens3/eth0/g'  /etc/network/interfaces
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+grub-mkconfig -o /boot/grub/grub.cfg
 
      read -p "需要重启VPS，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
@@ -140,6 +145,11 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 wireguard_ubuntu_install(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
 echo "请选择 Debian安装wireguard,请稍等..."
+sleep 3s
+start_menu
+fi
+if  [ -n "$(grep '[Interface]' /etc/wireguard/wg0.conf)" ] ;then
+echo "你已安装wireguard,请稍等..."
 sleep 3s
 start_menu
 fi
@@ -220,6 +230,7 @@ cat /etc/wireguard/client.conf
 }
 
 wireguard_hu(){
+echo "请确认你已安装wireguard服务"
 echo "直接回车或输入错误会导指新添加用户不能使用"
 echo "输入ListenPort = 后面的数字，如（ListenPort = 390 输入390)"
 echo ""
