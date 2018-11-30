@@ -1,6 +1,6 @@
 #!/bin/bash
 if  [ -n "$(grep 'CentOS' /etc/redhat-release)" ] ;then
-echo "不支持CentOS，选择debian8或Ubuntu16"
+echo "不支持CentOS系统，选择debian8系统或Ubuntu16系统"
 exit
 fi
 
