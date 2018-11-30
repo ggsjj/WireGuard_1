@@ -229,7 +229,8 @@ cat /etc/wireguard/client.conf
 \cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
-wireguard_hu(){
+wireguard_newsyuhu(){
+
 echo "请确认你已安装wireguard服务"
 echo "直接回车或输入错误会导指新添加用户不能使用"
 echo "输入ListenPort = 后面的数字，如（ListenPort = 390 输入390)"
@@ -338,7 +339,7 @@ start_menu(){
 	wireguard_ubuntu_install
 	;;
 	5)
-	wireguard_hu
+	wireguard_newsyuhu
 	;;
 	6)
 	wireguard_unane
