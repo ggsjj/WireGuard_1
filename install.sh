@@ -39,6 +39,7 @@ rand(){
 port=$(rand 1000 60000)
 apt-get update -y && apt-get install curl -y
 serverip=$(curl icanhazip.com)
+mkdir /root/wireguard
 mkdir /etc/wireguard
 cd /etc/wireguard
 wg genkey | tee sprivatekey | wg pubkey > spublickey
@@ -95,7 +96,6 @@ sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
 cat /etc/wireguard/client.conf
-mkdir /root/wireguard
 \cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
@@ -135,6 +135,7 @@ rand(){
 port=$(rand 1000 60000)
 apt-get update -y && apt-get install curl -y
 serverip=$(curl icanhazip.com)
+mkdir /root/wireguard
 mkdir /etc/wireguard
 cd /etc/wireguard
 wg genkey | tee sprivatekey | wg pubkey > spublickey
@@ -190,7 +191,6 @@ sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
 cat /etc/wireguard/client.conf
-mkdir /root/wireguard
 \cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
@@ -241,6 +241,12 @@ echo " debian8 内核为linux-image-3.16.0-4 可以安装兼容安装锐速，�
 echo " ubuntu16 内核为4.4.0-47-generic 可以安装兼容安装锐速，如何不是多次更新内核"
 }
 
+wireguard_ls(){
+ls /root/wireguard
+echo "直接回车默认用户"
+ read -p "输入数字client后面数字 如client12输入12:" la
+ cat //root/wireguard/client$la.conf
+}
 #开始菜单
 start_menu(){
     clear
@@ -264,8 +270,8 @@ start_menu(){
     echo "5. 添加用户"
     echo ""
     echo "6. 查看内核是不是支持安装锐速"
-    echo ""
-    echo "7. 退出脚本"
+    echo "7. 查看用户"
+    echo "8. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
@@ -288,6 +294,9 @@ start_menu(){
 	wireguard_unane
 	;;
 	7)
+	wireguard_ls
+	;;
+	8)
 	exit 1
 	;;
 	*)
