@@ -9,7 +9,7 @@ update_debian8_kernel(){
 if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
 echo "请选择 Ubuntu更新内核，请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 #debian 8 删除内核
 del=$(uname -r)
@@ -35,12 +35,12 @@ wireguard_debian8_install(){
 if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
 echo "请选择 Ubuntu安装wireguard,请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 if  [ -n "$(grep '[Interface]' /etc/wireguard/wg0.conf)" ] ;then
 echo "你已安装wireguard,请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
 echo -e 'Package: *\nPin: release a=unstable\nPin-Priority: 150' > /etc/apt/preferences.d/limit-unstable
@@ -122,7 +122,7 @@ wireguard_ubuntu_kernel(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
 echo "请选择 Debian更新内核,请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 del=$(uname -r)
 apt-get purge $del -y
@@ -146,12 +146,12 @@ wireguard_ubuntu_install(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
 echo "请选择 Debian安装wireguard,请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 if  [ -n "$(grep '[Interface]' /etc/wireguard/wg0.conf)" ] ;then
 echo "你已安装wireguard,请稍等..."
 sleep 3s
-start_menu
+exit
 fi
 apt update
 apt install linux-headers-$(uname -r) -y
