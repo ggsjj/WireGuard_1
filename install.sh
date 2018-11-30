@@ -275,6 +275,7 @@ start_menu(){
     echo "======================================================================="
     echo "纯小白写的，基于《逗比根据地》代码，写的一键脚本，大神请略过！！    "
     echo "介绍：适用于debian8和ubuntu16，只为可以多装协议 又可以装锐速LotServer "
+    echo "debian更换内核会跳出选择 YES 或 NO  ，用键盘 按TAB键 选择NO 按回车"
     echo "如内核一致，也需要更新一次内核，保证正常安装wireguard"
     echo "不需要安装锐速LotServe可只更新一次内核后,直接安装wireguard"
     echo "debian8 内核为3.16.0-4-amd64 可以兼容安装锐速LotServer "
