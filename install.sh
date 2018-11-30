@@ -248,11 +248,17 @@ start_menu(){
 	uname -r
     echo "================================="
     echo "1. debian8更新内核"
+    echo ""
     echo "2. debian8安装wireguard"
+    echo ""
     echo "3. ubuntu16更新内核"
+    echo ""
     echo "4. ubuntu16安装wireguard"
+    echo ""
     echo "5. 添加用户"
+    echo ""
     echo "6. 查看内核是不是支持安装锐速"
+    echo ""
     echo "7. 退出脚本"
     echo
     read -p "请输入数字:" num
