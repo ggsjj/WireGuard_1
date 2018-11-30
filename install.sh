@@ -206,7 +206,6 @@ rand(){
 }
 hu=$(rand 10 250)
 serverip=$(curl icanhazip.com)
-mkdir /etc/wireguard
 cd /etc/wireguard
 wg genkey | tee cprivatekey$hu | wg pubkey > cpublickey$hu
 wg set wg0 peer $(cat cpublickey$hu) allowed-ips 10.0.0.$hu/32
