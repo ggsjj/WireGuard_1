@@ -3,6 +3,10 @@
 
 #debian8更新内核
 update_debian8_kernel(){
+if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
+echo "请选择 Ubuntu更新内核"
+exit
+fi
 #debian 8 删除内核
 del=$(uname -r)
 apt-get -y purge linux-image-$del
@@ -120,6 +124,10 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
 wireguard_ubuntu_install(){
+if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
+echo "请选择 Debian更新内核"
+exit
+fi
 apt update
 apt install linux-headers-$(uname -r) -y
 apt install software-properties-common -y
