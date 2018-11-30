@@ -1,5 +1,5 @@
 #!/bin/bash
-if  [ -n "$(grep 'CentOS' /etc/redhat-release)" ] ;then
+if  [ -n "$(grep -s 'CentOS' /etc/redhat-release)" ] ;then
 echo "不支持CentOS系统，选择debian8系统或Ubuntu16系统"
 exit
 fi
@@ -7,8 +7,9 @@ fi
 #debian8更新内核
 update_debian8_kernel(){
 if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
-echo "请选择 Ubuntu更新内核"
-exit
+echo "请选择 Ubuntu更新内核，请稍等..."
+sleep 3s
+start_menu
 fi
 #debian 8 删除内核
 del=$(uname -r)
@@ -31,8 +32,9 @@ rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
 
 #debian8安装wireguard
 if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
-echo "请选择 Ubuntu安装wireguard"
-exit
+echo "请选择 Ubuntu安装wireguard,请稍等..."
+sleep 3s
+start_menu
 fi
 wireguard_debian8_install(){
 echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
@@ -113,8 +115,9 @@ cat /etc/wireguard/client.conf
 
 wireguard_ubuntu_kernel(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
-echo "请选择 Debian更新内核"
-exit
+echo "请选择 Debian更新内核,请稍等..."
+sleep 3s
+start_menu
 fi
 del=$(uname -r)
 sudo apt-get purge $del -y
@@ -136,8 +139,9 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 wireguard_ubuntu_install(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
-echo "请选择 Debian安装wireguard"
-exit
+echo "请选择 Debian安装wireguard,请稍等..."
+sleep 3s
+start_menu
 fi
 apt update
 apt install linux-headers-$(uname -r) -y
