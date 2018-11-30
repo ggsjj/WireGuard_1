@@ -1,5 +1,8 @@
 #!/bin/bash
-
+if  [ -n "$(grep 'CentOS' /etc/redhat-release)" ] ;then
+echo "不支持CentOS，选择debian8或Ubuntu16"
+exit
+fi
 
 #debian8更新内核
 update_debian8_kernel(){
