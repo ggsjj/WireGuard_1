@@ -136,7 +136,6 @@ mkdir /etc/wireguard
 cd /etc/wireguard
 wg genkey | tee sprivatekey | wg pubkey > spublickey
 wg genkey | tee cprivatekey | wg pubkey > cpublickey
-port=$(rand 10000 60000)
 echo "[Interface]
 # 服务器的私匙，对应客户端配置中的公匙（自动读取上面刚刚生成的密匙内容）
 PrivateKey = $(cat sprivatekey)
@@ -189,6 +188,47 @@ wg-quick up wg0
 systemctl enable wg-quick@wg0
 }
 
+wireguard_hu(){
+sed -n 6p /etc/wireguard/wg0.conf
+read -p "输入ListenPort = 后面的数字，如（ListenPort = 390 输入390）  :" a 
+r=$[a]
+rand(){
+    min=$1
+    max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}')
+    echo $(($num%$max+$min))  
+}
+hu=$(rand 10 250)
+serverip=$(curl icanhazip.com)
+mkdir /etc/wireguard
+cd /etc/wireguard
+wg genkey | tee cprivatekey$hu | wg pubkey > cpublickey$hu
+wg set wg0 peer $(cat cpublickey$hu) allowed-ips 10.0.0.$hu/32
+wg-quick save wg0
+
+echo "[Interface]
+# 客户端的私匙，对应服务器配置中的客户端公匙（自动读取上面刚刚生成的密匙内容）
+PrivateKey = $(cat cprivatekey$hu)
+# 客户端的内网IP地址（如果上面你添加的内网IP不是 .3 请自行修改）
+Address = 10.0.0.$hu/24
+# 解析域名用的DNS
+DNS = 8.8.8.8
+# 保持默认
+MTU = 1420
+[Peer]
+# 服务器的公匙，对应服务器的私匙（自动读取上面刚刚生成的密匙内容）
+PublicKey = $(cat spublickey)
+# 服务器地址和端口，下面的 X.X.X.X 记得更换为你的服务器公网IP，端口请填写服务端配置时的监听端口
+Endpoint = $serverip:$r
+# 因为是客户端，所以这个设置为全部IP段即可
+AllowedIPs = 0.0.0.0/0, ::0/0
+# 保持连接，如果客户端或服务端是 NAT 网络(比如国内大多数家庭宽带没有公网IP，都是NAT)，那么就需要添加这个参数定时链接服务端(单位：秒)，如果你的服务器和你本地都不是 NAT 网络，那么建议不使用该参数（设置为0，或客户端配置文件中删除这行）
+PersistentKeepalive = 25"|sed '/^#/d;/^\s*$/d' > client$hu.conf
+wg-quick down wg0
+wg-quick up wg0
+cat /etc/wireguard/client$hu.conf
+}
+
 wireguard_unane(){
 uname -r
 echo " debian8 内核为linux-image-3.16.0-4 可以安装兼容安装锐速，如何不是多次更新内核"
@@ -211,8 +251,9 @@ start_menu(){
     echo "2. debian8安装wireguard"
     echo "3. ubuntu16更新内核"
     echo "4. ubuntu16安装wireguard"
-    echo "5. 查看内核是不是支持安装锐速"
-    echo "6. 退出脚本"
+    echo "5. 添加用户"
+    echo "6. 查看内核是不是支持安装锐速"
+    echo "7. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
@@ -229,9 +270,12 @@ start_menu(){
 	wireguard_ubuntu_install
 	;;
 	5)
-	wireguard_unane
+	wireguard_hu
 	;;
 	6)
+	wireguard_unane
+	;;
+	7)
 	exit 1
 	;;
 	*)
