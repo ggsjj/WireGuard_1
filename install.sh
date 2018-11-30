@@ -233,6 +233,7 @@ PersistentKeepalive = 25"|sed '/^#/d;/^\s*$/d' > client$hu.conf
 wg-quick down wg0
 wg-quick up wg0
 cat /etc/wireguard/client$hu.conf
+\cp -f /etc/wireguard/client$hu.conf /root/wireguard/client$hu.conf
 }
 
 wireguard_unane(){
