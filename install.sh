@@ -3,13 +3,13 @@
 
 #debian8更新内核
 update_debian8_kernel(){
+#debian 8 删除内核
+del=$(uname -r)
+apt-get -y purge linux-image-$del
 #下载内核
 wget http://security-cdn.debian.org/pool/updates/main/l/linux/linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
 #安装内核
 dpkg -i linux-image-3.16.0-4*.deb
-#debian 8 删除内核
-del=$(uname -r)
-apt-get -y purge linux-image-$del
 #更新 grub 系统引导文件并重启系统。
 update-grub
 rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
@@ -98,8 +98,8 @@ systemctl enable wg-quick@wg0
 
 wireguard_ubuntu_kernel(){
 del=$(uname -r)
-sudo apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-generic
 sudo apt-get purge $del -y
+sudo apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-generic
 sudo update-grub
 # 更换网卡eth0
 sed  -i 's/consoleblank=0/net.ifnames=0 biosdevname=0/g'  /etc/default/grub
