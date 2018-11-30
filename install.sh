@@ -30,6 +30,10 @@ rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
 }
 
 #debian8安装wireguard
+if  [ -n "$(grep 'Ubuntu' /etc/issue.net)" ] ;then
+echo "请选择 Ubuntu安装wireguard"
+exit
+fi
 wireguard_debian8_install(){
 echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
 echo -e 'Package: *\nPin: release a=unstable\nPin-Priority: 150' > /etc/apt/preferences.d/limit-unstable
@@ -108,6 +112,10 @@ cat /etc/wireguard/client.conf
 }
 
 wireguard_ubuntu_kernel(){
+if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
+echo "请选择 Debian更新内核"
+exit
+fi
 del=$(uname -r)
 sudo apt-get purge $del -y
 sudo apt-get install linux-image-4.4.0-47-generic linux-image-extra-4.4.0-47-generic
@@ -128,7 +136,7 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 wireguard_ubuntu_install(){
 if  [ -n "$(grep 'Debian' /etc/issue.net)" ] ;then
-echo "请选择 Debian更新内核"
+echo "请选择 Debian安装wireguard"
 exit
 fi
 apt update
@@ -275,7 +283,7 @@ start_menu(){
     echo "======================================================================="
     echo "纯小白写的，基于《逗比根据地》代码，写的一键脚本，大神请略过！！    "
     echo "介绍：适用于debian8和ubuntu16，只为可以多装协议 又可以装锐速LotServer "
-    echo "debian更换内核会跳出选择 YES 或 NO  ，用键盘 按TAB键 选择NO 按回车"
+    echo "debian更换内核会跳出选择 <YES> 或 <NO>  ，用键盘 按TAB键 选择NO 按回车"
     echo "如内核一致，也需要更新一次内核，保证正常安装wireguard"
     echo "不需要安装锐速LotServe可只更新一次内核后,直接安装wireguard"
     echo "debian8 内核为3.16.0-4-amd64 可以兼容安装锐速LotServer "
