@@ -94,6 +94,9 @@ echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
+cat /etc/wireguard/client.conf
+mkdir /root/wireguard
+\cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
 wireguard_ubuntu_kernel(){
@@ -186,6 +189,9 @@ echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
+cat /etc/wireguard/client.conf
+mkdir /root/wireguard
+\cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
 wireguard_hu(){
