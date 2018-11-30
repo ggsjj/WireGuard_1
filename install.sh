@@ -95,6 +95,7 @@ echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
+echo "client配置如下："
 cat /etc/wireguard/client.conf
 \cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
@@ -190,14 +191,18 @@ echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 wg-quick up wg0
 systemctl enable wg-quick@wg0
+echo "client配置如下："
 cat /etc/wireguard/client.conf
 \cp -f /etc/wireguard/client.conf /root/wireguard/client.conf
 }
 
 wireguard_hu(){
+echo "直接回车或输入错误会导指新添加用户不能使用"
+echo "输入ListenPort = 后面的数字，如（ListenPort = 390 输入390)"
+echo ""
 sed -n 6p /etc/wireguard/wg0.conf
-read -p "输入ListenPort = 后面的数字，如（ListenPort = 390 输入390）  :" a 
-r=$[a]
+read -p "请输入数字:" r
+
 rand(){
     min=$1
     max=$(($2-$min+1))
@@ -231,34 +236,44 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25"|sed '/^#/d;/^\s*$/d' > client$hu.conf
 wg-quick down wg0
 wg-quick up wg0
+echo "client$hu配置如下："
 cat /etc/wireguard/client$hu.conf
-\cp -f /etc/wireguard/client$hu.conf /root/wireguard/client$hu.conf
+cp -f /etc/wireguard/client$hu.conf /root/wireguard/client$hu.conf
 }
 
 wireguard_unane(){
+echo "当前内核,如不对应内核。请再更新内核"
 uname -r
-echo " debian8 内核为linux-image-3.16.0-4 可以安装兼容安装锐速，如何不是多次更新内核"
-echo " ubuntu16 内核为4.4.0-47-generic 可以安装兼容安装锐速，如何不是多次更新内核"
+echo " debian8 内核为linux-image-3.16.0-4 可以安装兼容安装锐速"
+echo " ubuntu16 内核为4.4.0-47-generic 可以安装兼容安装锐速"
 }
 
 wireguard_ls(){
-ls /root/wireguard
+echo "-----文件在根目录wireguard内--------"
+ls -1 /root/wireguard
+echo "-----------------------------------"
 echo "直接回车默认用户"
- read -p "输入数字client后面数字 如client12输入12:" la
- cat //root/wireguard/client$la.conf
+echo "输入数字client后面数字 如(client12输入12)"
+read -p "请输入数字:" la
+echo "client$la配置如下："
+ cat /root/wireguard/client$la.conf
 }
 #开始菜单
 start_menu(){
     clear
-    echo "================================="
-    echo " 介绍：适用于debian8和ubuntu16"
-    echo " debian8 内核为linux-image-3.16.0-4 可以安装兼容安装锐速，如何不是多次更新内核"
-    echo " ubuntu16 内核为4.4.0-47-generic 可以安装兼容安装锐速，如何不是多次更新内核"
-    echo "只为可以多装协议 又可以装LotServer "
-    echo "================================="
-    echo "==当前内核,如不对应请再更新内核===="
+    echo "======================================================================="
+    echo "纯小白写的，基于《逗比根据地》代码，写的一键脚本，大神请略过！！    "
+    echo "介绍：适用于debian8和ubuntu16，只为可以多装协议 又可以装锐速LotServer "
+    echo "如内核一致，也需要更新一次内核，保证正常安装wireguard"
+    echo "不需要安装锐速LotServe可只更新一次内核后,直接安装wireguard"
+    echo "     "
+    echo "debian8 内核为linux-image-3.16.0-4 可以兼容安装锐速LotServer "
+    echo "ubuntu16 内核为4.4.0-47-generic 可以兼容安装锐速LotServer "
+    echo "======================================================================"
+    echo "     "
+    echo "----当前内核,如不对应内核，请再次更新内核----"
 	uname -r
-    echo "================================="
+    echo "======================================================================"
     echo "1. debian8更新内核"
     echo ""
     echo "2. debian8安装wireguard"
@@ -267,10 +282,12 @@ start_menu(){
     echo ""
     echo "4. ubuntu16安装wireguard"
     echo ""
-    echo "5. 添加用户"
+    echo "5. 添加用户配置"
     echo ""
     echo "6. 查看内核是不是支持安装锐速"
-    echo "7. 查看用户"
+    echo ""
+    echo "7. 查看用户配置"
+    echo ""
     echo "8. 退出脚本"
     echo
     read -p "请输入数字:" num
