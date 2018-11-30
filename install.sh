@@ -9,7 +9,7 @@ wget http://security-cdn.debian.org/pool/updates/main/l/linux/linux-image-3.16.0
 dpkg -i linux-image-3.16.0-4*.deb
 #debian 8 删除内核
 del=$(uname -r)
-apt-get -y remove linux-image-$del
+apt-get -y purge linux-image-$del
 #更新 grub 系统引导文件并重启系统。
 update-grub
 rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
