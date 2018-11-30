@@ -13,7 +13,7 @@ dpkg -i linux-image-3.16.0-4*.deb
 #更新 grub 系统引导文件并重启系统。
 update-grub
 rm -rf linux-image-3.16.0-4-amd64_3.16.43-2+deb8u5_amd64.deb
-     read -p "需要重启VPS，再次执行脚本选择安装wireguard，是否现在重启 ? [Y/n] :" yn
+     read -p "需要重启VPS，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [ "$yn" = "y" ] || [ "$yn" = "Y" ]; then
 		echo "${Info} VPS 重启中..."
@@ -110,7 +110,7 @@ sed  -i 's/consoleblank=0/net.ifnames=0 biosdevname=0/g'  /etc/default/grub
 sed  -i 's/ens3/eth0/g'  /etc/network/interfaces
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 
-     read -p "需要重启VPS，再次执行脚本选择安装wireguard，是否现在重启 ? [Y/n] :" yn
+     read -p "需要重启VPS，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [ "$yn" = "y" ] || [ "$yn" = "Y" ]; then
 		echo "${Info} VPS 重启中..."
